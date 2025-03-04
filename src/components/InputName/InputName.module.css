@@ -1,0 +1,47 @@
+
+.inputContainer {
+    text-align: center;
+  }
+  
+  .inputWrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 70px;
+    position: relative;
+  }
+
+  .arrow {
+    position: absolute;
+    top: -40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #1E232C;
+  }
+  
+  .inputField {
+    font-size: 2rem;
+    width: 60px;
+    height: 56px;
+    box-shadow: 0px 0px 6px 0px #00000080;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .correct{
+    border: 1px solid #1E232C;
+    border-color:  #1E232C !important;
+    outline: #1E232C ;
+  }
+  
+  .inputField.error {
+    border-color: #E54040B2;
+font-weight: 700;
+font-size: 32px;
+line-height: 41.6px;
+  }
+  
+  .inputField.default {
+  border: none;
+  }
+  

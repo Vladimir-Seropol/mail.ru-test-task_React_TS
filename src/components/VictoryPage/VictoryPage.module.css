@@ -1,0 +1,42 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time{
+font-weight: 700;
+font-size: 24px;
+line-height: 31.2px;
+}
+
+.title{
+font-weight: 700;
+font-size: 30px;
+line-height: 39px;
+}
+
+table{
+    border-collapse: collapse;
+    width: 450px;
+}
+
+td{
+    width: 50%;
+font-weight: 700;
+font-size: 16px;
+line-height: 20.8px;
+border: 1px solid black;
+/* padding: 8px; */
+text-align: center;
+}
+
+
+
+.button{
+    margin-top: 20px;
+     padding: 16px 103px;
+     background: none;
+     border: 1px solid #1E232C;
+     font-family: 20px; 
+}

@@ -8,16 +8,10 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 70px;
-    position: relative;
+
   }
 
-  .arrow {
-    position: absolute;
-    top: -40px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #1E232C;
-  }
+
   
   .inputField {
     font-size: 2rem;
@@ -28,11 +22,18 @@
     border-radius: 8px;
   }
 
-  .correct{
-    border: 1px solid #1E232C;
-    border-color:  #1E232C !important;
-    outline: #1E232C ;
+  .inputItem{
+    position: relative;
   }
+
+  .quote,
+  .arrow {
+    position: absolute;
+    top: -40px;
+    left: 40%;
+    font-size: 24px;
+  }
+ 
   
   .inputField.error {
     border-color: #E54040B2;
@@ -41,7 +42,31 @@ font-size: 32px;
 line-height: 41.6px;
   }
   
-  .inputField.default {
-  border: none;
+ .default {
+    border: none;
   }
+  
+  .inputField.correct {
+    position: relative;
+  }
+  
+
+  .inputItem {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .inputItem.correct::before {
+    content: "✔";
+    position: absolute;
+    z-index: 20;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    /* display: block; */
+  }
+  
+  
+  
   

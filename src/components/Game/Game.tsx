@@ -168,13 +168,18 @@ const Game: React.FC = () => {
         rounds={rounds}
         currentUserName={currentUser?.name}
       />
-      <InputName
-        name={currentUser?.name || ""}
-        inputValues={inputValues}
-        handleInputChange={handleInputChange}
-        errorIndexes={errorIndexes}
-        correctLetters={new Set([0, 2, 4])}
-      />
+    <InputName
+  name={currentUser?.name || ""}
+  inputValues={inputValues}
+  handleInputChange={handleInputChange}
+  errorIndexes={errorIndexes}
+  correctLetters={new Set(
+    inputValues
+      .map((char, index) => (char === currentUser?.name[index] ? index : -1))
+      .filter((index) => index !== -1)
+  )}
+/>
+
     </div>
   );
 };

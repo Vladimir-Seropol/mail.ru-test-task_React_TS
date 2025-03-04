@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./InputName.module.css";
 
 interface InputNameProps {
@@ -16,7 +16,8 @@ const InputName: React.FC<InputNameProps> = ({
   errorIndexes,
   correctLetters,
 }) => {
-  let inputIndex = 0; 
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  let inputIndexRef = 0; 
 
   return (
     <div className={styles.inputContainer}>
@@ -24,25 +25,40 @@ const InputName: React.FC<InputNameProps> = ({
         {name.split("").map((char, index) => {
           if (char === " ") {
             return (
-              <span key={index} className={styles.space}>
+              <span key={`space-${index}`} className={styles.space}>
                 {" "}
               </span>
             );
           }
 
-          const currentInputIndex = inputIndex; 
-          inputIndex++; 
+          const currentInputIndex = inputIndexRef;
+          inputIndexRef++; 
+
+         
+          let inputClass = styles.default; 
+          if (inputValues[currentInputIndex]) {
+            inputClass = errorIndexes.has(currentInputIndex)
+              ? styles.error
+              : correctLetters.has(currentInputIndex)
+              ? styles.correct
+              : styles.default;
+          }
 
           return (
-            <input
-              key={index}
-              type="text"
-              value={inputValues[currentInputIndex] || ""}
-              onChange={(e) => handleInputChange(currentInputIndex, e.target.value)}
-              className={`${styles.inputField} 
-                ${errorIndexes.has(currentInputIndex) ? styles.error : styles.default} 
-                ${correctLetters.has(currentInputIndex) ? styles.correct : ""}`}
-            />
+            <div key={currentInputIndex} className={`${styles.inputItem} ${inputClass}`}>
+              {focusedIndex === currentInputIndex && !correctLetters.has(currentInputIndex) && (
+                <span className={styles.arrow}>↓</span>
+              )}
+
+              <input
+                type="text"
+                value={inputValues[currentInputIndex] || ""}
+                onChange={(e) => handleInputChange(currentInputIndex, e.target.value)}
+                onFocus={() => setFocusedIndex(currentInputIndex)}
+                onBlur={() => setFocusedIndex(null)}
+                className={`${styles.inputField} ${inputClass}`}
+              />
+            </div>
           );
         })}
       </div>

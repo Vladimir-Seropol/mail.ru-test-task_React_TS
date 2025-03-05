@@ -9,6 +9,8 @@ interface InputNameProps {
   correctLetters: Set<number>;
 }
 
+
+
 const InputName: React.FC<InputNameProps> = ({
   name,
   inputValues,

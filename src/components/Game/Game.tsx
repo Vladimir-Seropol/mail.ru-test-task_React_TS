@@ -32,6 +32,14 @@ const Game: React.FC = () => {
   const [usedWords, setUsedWords] = useState<string[]>([]);
   const startTime = useRef<number>(Date.now());
 
+ 
+  const shuffleArray = (array: unknown[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const roundsFromUrl = queryParams.get("rounds");
@@ -45,12 +53,16 @@ const Game: React.FC = () => {
           "https://jsonplaceholder.typicode.com/users"
         );
         const data = await response.json();
-        setUsers(data.slice(0, rounds));
-        if (data[0]) {
-          setCurrentUser(data[0]);
 
-      
-          const filteredName = data[0].name.replace(/\s/g, "");
+       
+        const shuffledUsers = [...data];
+        shuffleArray(shuffledUsers);
+        setUsers(shuffledUsers.slice(0, rounds));
+
+        if (shuffledUsers[0]) {
+          setCurrentUser(shuffledUsers[0]);
+
+          const filteredName = shuffledUsers[0].name.replace(/\s/g, "");
           setInputValues(Array(filteredName.length).fill(""));
         }
       } catch (error) {
@@ -88,7 +100,6 @@ const Game: React.FC = () => {
       newInputValues[index] = value;
       setInputValues(newInputValues);
 
-     
       const filteredName = currentUser.name.replace(/\s/g, "");
       const currentChar = filteredName[index].toLowerCase();
 
@@ -120,28 +131,26 @@ const Game: React.FC = () => {
     setUsedWords(updatedUsedWords);
 
     if (currentRound < rounds - 1) {
-        const nextRound = currentRound + 1;
-        const nextUser = users[nextRound];
+      const nextRound = currentRound + 1;
+      const nextUser = users[nextRound];
 
-        if (nextUser) {
-            setCurrentRound(nextRound);
-            setCurrentUser(nextUser);
+      if (nextUser) {
+        setCurrentRound(nextRound);
+        setCurrentUser(nextUser);
 
-            const filteredName = nextUser.name.replace(/\s/g, "");
-            setInputValues(Array(filteredName.length).fill(""));
-            setErrorIndexes(new Set());
-            setPenaltyMessage(null);
-            startTime.current = Date.now();
-        }
+        const filteredName = nextUser.name.replace(/\s/g, "");
+        setInputValues(Array(filteredName.length).fill(""));
+        setErrorIndexes(new Set());
+        setPenaltyMessage(null);
+        startTime.current = Date.now();
+      }
     } else {
-        navigate("/victory", {
-            state: { roundTimes: [...roundTimes, roundTime], usedWords: updatedUsedWords }
-        });
+      navigate("/victory", {
+        state: { roundTimes: [...roundTimes, roundTime], usedWords: updatedUsedWords },
+      });
     }
-};
+  };
 
-
-  
   const isInputCorrect =
     currentUser &&
     inputValues.every(
@@ -168,18 +177,18 @@ const Game: React.FC = () => {
         rounds={rounds}
         currentUserName={currentUser?.name}
       />
-    <InputName
-  name={currentUser?.name || ""}
-  inputValues={inputValues}
-  handleInputChange={handleInputChange}
-  errorIndexes={errorIndexes}
-  correctLetters={new Set(
-    inputValues
-      .map((char, index) => (char === currentUser?.name[index] ? index : -1))
-      .filter((index) => index !== -1)
-  )}
-/>
 
+      <InputName
+        name={currentUser?.name || ""}
+        inputValues={inputValues}
+        handleInputChange={handleInputChange}
+        errorIndexes={errorIndexes}
+        correctLetters={new Set(
+          inputValues
+            .map((char, index) => (char === currentUser?.name[index] ? index : -1))
+            .filter((index) => index !== -1)
+        )}
+      />
     </div>
   );
 };

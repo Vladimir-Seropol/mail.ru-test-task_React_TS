@@ -106,9 +106,7 @@ const Game: React.FC = () => {
       if (value.toLowerCase() !== currentChar) {
         setErrorIndexes((prevIndexes) => new Set(prevIndexes.add(index)));
         setPenaltyMessage("-5 сек");
-        setTime((prevTime) =>
-          prevTime !== null ? Math.max(0, prevTime - 5) : prevTime
-        );
+        setTime((prevTime) => (prevTime !== null ? Math.max(0, prevTime - 5) : prevTime));
       } else {
         setErrorIndexes((prevIndexes) => {
           const newIndexes = new Set(prevIndexes);
@@ -119,6 +117,16 @@ const Game: React.FC = () => {
       }
     }
   };
+
+  const correctLetters = new Set(
+    inputValues
+      .map((char, index) => {
+        // Сравниваем без учета пробела
+        return char.toLowerCase() === currentUser?.name.replace(/\s/g, "")[index].toLowerCase() ? index : -1;
+      })
+      .filter((index) => index !== -1)
+  );
+
 
   const handleNextRound = () => {
     const endTime = Date.now();
@@ -183,11 +191,7 @@ const Game: React.FC = () => {
         inputValues={inputValues}
         handleInputChange={handleInputChange}
         errorIndexes={errorIndexes}
-        correctLetters={new Set(
-          inputValues
-            .map((char, index) => (char === currentUser?.name[index] ? index : -1))
-            .filter((index) => index !== -1)
-        )}
+        correctLetters={correctLetters}
       />
     </div>
   );

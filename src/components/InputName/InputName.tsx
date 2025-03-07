@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./InputName.module.css";
 
 interface InputNameProps {
@@ -9,66 +9,82 @@ interface InputNameProps {
   correctLetters: Set<number>;
 }
 
-
-
 const InputName: React.FC<InputNameProps> = ({
-    name,
-    inputValues,
-    handleInputChange,
-    errorIndexes,
-    correctLetters,
-  }) => {
-    const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  name,
+  inputValues,
+  handleInputChange,
+  errorIndexes,
+  correctLetters,
+}) => {
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Получаем индексы инпутов (игнорируем пробелы)
+  const inputIndexes = name
+    .split("")
+    .map((char, index) => (char !== " " ? index : null))
+    .filter((index): index is number => index !== null);
+
+ 
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, [name]);
+
   
-    let inputIndexRef = 0;
-  
-    return (
-      <div className={styles.inputContainer}>
-        <div className={styles.inputWrapper}>
-          {name.split("").map((char, index) => {
-            // Пропускаем пробелы
-            if (char === " ") {
-              return (
-                <span key={`space-${index}`} className={styles.space}>
-                  {" "}
-                </span>
-              );
-            }
-  
-            const currentInputIndex = inputIndexRef;
-            inputIndexRef++; 
-  
-            let inputClass = styles.default; 
-            if (inputValues[currentInputIndex]) {
-              inputClass =
-                errorIndexes.has(currentInputIndex)
-                  ? styles.error
-                  : correctLetters.has(currentInputIndex)
-                  ? styles.correct
-                  : styles.default;
-            }
-  
-            return (
-              <div key={currentInputIndex} className={`${styles.inputItem} ${inputClass}`}>
-                {focusedIndex === currentInputIndex && !correctLetters.has(currentInputIndex) && (
-                  <span className={styles.arrow}>↓</span>
-                )}
-  
-                <input
-                  type="text"
-                  value={inputValues[currentInputIndex] || ""}
-                  onChange={(e) => handleInputChange(currentInputIndex, e.target.value)}
-                  onFocus={() => setFocusedIndex(currentInputIndex)}
-                  onBlur={() => setFocusedIndex(null)}
-                  className={`${styles.inputField} ${inputClass}`}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+  const handleChange = (index: number, value: string) => {
+    handleInputChange(index, value);
+
+    if (value && index < inputIndexes.length - 1) {
+      setTimeout(() => inputRefs.current[index + 1]?.focus(), 50);
+    }
   };
-  
-  
+
+  return (
+    <div className={styles.inputContainer}>
+      <div className={styles.inputWrapper}>
+        {name.split("").map((char, index) => {
+          if (char === " ") {
+            return (
+              <span key={`space-${index}`} className={styles.space}>
+                {" "}
+              </span>
+            );
+          }
+
+          const inputIndex = inputIndexes.indexOf(index);
+          let inputClass = styles.default;
+          
+          if (errorIndexes.has(inputIndex)) {
+            inputClass = styles.error;
+          } else if (correctLetters.has(inputIndex)) {
+            inputClass = styles.correct;
+          }
+          
+
+          return (
+            <div key={inputIndex} className={`${styles.inputItem} ${inputClass}`}>
+              {focusedIndex === inputIndex && !correctLetters.has(inputIndex) && (
+                <span className={styles.arrow}>↓</span>
+              )}
+
+              <input
+                ref={(el) => {
+                  if (el) inputRefs.current[inputIndex] = el;
+                }}
+                type="text"
+                value={inputValues[inputIndex] || ""}
+                onChange={(e) => handleChange(inputIndex, e.target.value)}
+                onFocus={() => setFocusedIndex(inputIndex)}
+                onBlur={() => setFocusedIndex(null)}
+                className={`${styles.inputField} ${inputClass}`}
+                maxLength={1}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export default InputName;

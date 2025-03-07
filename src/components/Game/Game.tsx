@@ -82,17 +82,22 @@ const Game: React.FC = () => {
         );
       }, 1000);
       return () => clearInterval(intervalId);
-    } else if (time === 0) {
-      if (currentRound < rounds - 1) {
+    }  else if (time === 0) {
         const endTime = Date.now();
         const roundTime = Math.round((endTime - startTime.current) / 1000);
-        setRoundTimes((prevTimes) => [...prevTimes, roundTime]);
+      
+        const updatedUsedWords = [...usedWords, currentUser?.name || ""];
+        const updatedRoundTimes = [...roundTimes, roundTime];
+      
+        setRoundTimes(updatedRoundTimes);
+        setUsedWords(updatedUsedWords);
+      
         navigate("/defeat", {
-          state: { roundTimes: [...roundTimes, roundTime], usedWords },
+          state: { roundTimes: updatedRoundTimes, usedWords: updatedUsedWords },
         });
       }
-    }
-  }, [time, currentRound, rounds, navigate]);
+      
+    }, [time, currentRound, rounds, navigate]);
 
   const handleInputChange = (index: number, value: string) => {
     if (currentUser) {

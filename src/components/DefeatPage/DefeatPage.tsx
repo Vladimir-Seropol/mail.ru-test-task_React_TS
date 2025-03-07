@@ -28,13 +28,13 @@ const DefeatPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {roundTimes.map((time, index) => (
-              <tr key={index}>
-                <td>{usedWords[index]}</td>
-                <td>{time} сек</td>
-              </tr>
-            ))}
-          </tbody>
+  {usedWords.map((word, index) => (
+    <tr key={index}>
+      <td>{word}</td>
+      <td>{roundTimes[index] !== undefined ? `${roundTimes[index]} сек` : "Не угадано"}</td>
+    </tr>
+  ))}
+</tbody>
         </table>
       ) : (
         <p>Нет данных о прохождении.</p>

@@ -41,6 +41,13 @@ font-weight: 700;
 font-size: 32px;
 line-height: 41.6px;
   }
+
+  
+  
+  .inputField.error:focus {
+    border-color: #E54040B2; 
+    outline: none;
+  }
   
  .default {
     border: none;
